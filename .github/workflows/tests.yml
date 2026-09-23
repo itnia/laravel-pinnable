@@ -1,0 +1,47 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    name: Laravel ${{ matrix.laravel }} / PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - laravel: 12
+            php: '8.2'
+            testbench: '^10.0'
+            pest: '^3.0'
+            pest_plugin: '^3.0'
+          - laravel: 13
+            php: '8.3'
+            testbench: '^11.0'
+            pest: '^4.0'
+            pest_plugin: '^4.0'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, sqlite3, pdo_sqlite
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer update \
+            --with="illuminate/database:^${{ matrix.laravel }}.0" \
+            --with="illuminate/support:^${{ matrix.laravel }}.0" \
+            --with="orchestra/testbench:${{ matrix.testbench }}" \
+            --with="pestphp/pest:${{ matrix.pest }}" \
+            --with="pestphp/pest-plugin-laravel:${{ matrix.pest_plugin }}" \
+            --prefer-dist --no-interaction --no-progress
+
+      - name: Run tests
+        run: composer test

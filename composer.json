@@ -1,0 +1,49 @@
+{
+    "name": "itnia/laravel-pinnable",
+    "description": "Attach and manage pins on any Eloquent model via polymorphic relationships.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sasha Chairkin",
+            "email": "itnia.aurey@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/database": "^12.0|^13.0",
+        "illuminate/support": "^12.0|^13.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.0|^11.0",
+        "pestphp/pest": "^3.0|^4.0",
+        "pestphp/pest-plugin-laravel": "^3.0|^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Itnia\\Pinnable\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Itnia\\Pinnable\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Itnia\\Pinnable\\PinnableServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "pest"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
