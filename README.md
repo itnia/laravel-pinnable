@@ -16,7 +16,12 @@ php artisan migrate
 
 ## Usage
 
-Use `HasPins` on the model that owns pins and `Pinnable` on models that can be pinned:
+Use `HasPins` on the model that owns pins and `Pinnable` on models that can be pinned.
+
+The `owner` can be any Eloquent model — a `Board`, a `User`, a `Team`, or
+anything else. The same applies to `pinnable` and `pinner`.
+
+### Example 1: Board pins articles
 
 ```php
 use Itnia\Pinnable\Models\Concerns\HasPins;
@@ -37,6 +42,38 @@ $board->pin($article, auth()->user());
 $board->unpin($article);
 $article->isPinnedBy(auth()->user());
 $article->isPinnedIn($board);
+
+# with pins
+$articles = Article::query()
+    ->with(['pins' => fn($q) => $q->forOwner($board)])
+    ->get();
+```
+
+### Example 2: User pins articles
+
+```php
+use Itnia\Pinnable\Models\Concerns\HasPins;
+use Itnia\Pinnable\Models\Concerns\Pinnable;
+use Itnia\Pinnable\Models\Pin;
+
+class User extends Model
+{
+    use HasPins;
+}
+
+class Article extends Model
+{
+    use Pinnable;
+}
+
+$user->pin($article);
+$user->unpin($article);
+$article->isPinnedIn($user);
+
+# with attribute $article->is_pinned === true|false
+$articles = Article::query()
+    ->withExists(['pins as is_pinned' => fn($q) => $q->forOwner($board)])
+    ->get();
 ```
 
 `unpin()` returns `true` when a pin was deleted and `false` when no matching
