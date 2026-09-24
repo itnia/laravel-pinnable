@@ -72,7 +72,7 @@ $article->isPinnedIn($user);
 
 # with attribute $article->is_pinned === true|false
 $articles = Article::query()
-    ->withExists(['pins as is_pinned' => fn($q) => $q->forOwner($board)])
+    ->withExists(['pins as is_pinned' => fn($q) => $q->forOwner($user)])
     ->get();
 ```
 
